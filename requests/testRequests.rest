@@ -3,12 +3,25 @@ GET http://localhost:3003/api/blogs
 
 ###
 
+GET http://localhost:3003/api/blogs/11
+
+###
+
 POST http://localhost:3003/api/blogs HTTP/1.1
 Content-Type: application/json
 
 {
-    "title": "blog my 123",
+    "title": "2525253 test",
     "author": "some dude",
     "url": "some url",
-    "likes": 12340
+    "likes": 140
+}
+
+###
+
+POST http://localhost:3003/api/blogs HTTP/1.1
+Content-Type: application/json
+
+{
+    "title": "blog my 123"
 }
