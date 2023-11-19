@@ -17,7 +17,7 @@ const equalCountBlogs = [
 		title: "Canonical string reduction",
 		author: "Edsger W. Dijkstra",
 		url: "http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html",
-		likes: 12,
+		likes: 20,
 		__v: 0
 	},
 	{
@@ -25,7 +25,7 @@ const equalCountBlogs = [
 		title: 'Go To Statement Considered Harmful',
 		author: 'Edsger W. Dijkstra',
 		url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
-		likes: 5,
+		likes: 20,
 		__v: 0
 	},
 	{
@@ -208,5 +208,33 @@ describe('most blogs', () => {
 			blogs: 2
 		}
 		expect(listHelper.mostBlogs(equalCountBlogs)).toEqual(result)
+	})
+})
+
+describe('most likes', () => {
+	test('empty list', () => {
+		expect(listHelper.mostLikes([])).toEqual({})
+	})
+	test('list with one Blog', () => {
+		const result = {
+			author: 'Edsger W. Dijkstra',
+			likes: 5
+		}
+		expect(listHelper.mostLikes(listWithOneBlog)).toEqual(result)
+	})
+	test('list with many authors and one max', () => {
+		const result = {
+			author: "Edsger W. Dijkstra",
+			likes: 17
+		}
+		expect(listHelper.mostLikes(blogs)).toEqual(result)
+	})
+
+	test('list with equal famous blog authors expect first', () => {
+		const result = {
+			author: "Edsger W. Dijkstra",
+			likes: 40
+		}
+		expect(listHelper.mostLikes(equalCountBlogs)).toEqual(result)
 	})
 })
