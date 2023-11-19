@@ -15,7 +15,7 @@ const totalLikes = (blogs) => {
 const favoriteBlog = (blogs) => {
     if (blogs.length === 0)
         return {}
-    let highestLikes = 0;
+    let highestLikes = 0
     blogs.forEach(blog => {
         if (blog.likes > highestLikes)
             highestLikes = blog.likes
@@ -33,7 +33,7 @@ const favoriteBlog = (blogs) => {
 const mostBlogs = (blogs) => {
     if (blogs.length === 0)
         return {}
-    //Create (uniq) List of Authors with additional blogs field (initial value 0) 
+    //Create (uniq) List of Authors with additional blogs field (initial value 0)
     const authors =
         _.uniq(blogs.map(blog => blog.author))
             .map(author => {
@@ -59,7 +59,7 @@ const mostBlogs = (blogs) => {
 const mostLikes = (blogs) => {
     if (blogs.length === 0)
         return {}
-    //Create (uniq) List of Authors with additional likes field (initial value 0) 
+    //Create (uniq) List of Authors with additional likes field (initial value 0)
     const authors =
         _.uniq(blogs.map(blog => blog.author))
             .map(author => {
@@ -71,8 +71,8 @@ const mostLikes = (blogs) => {
     //max value of likes between authors for finding (first)author with most likes afterwards
     let max = 0
     /**initializes/updates the max variable by each call
-     * 
-     * @param {*String of the name of the Author} author 
+     *
+     * @param {*String of the name of the Author} author
      * @returns sum of all likes a author has in the blogs list
      */
     const getLikes = (author) => {
@@ -85,7 +85,7 @@ const mostLikes = (blogs) => {
             max = likes
         return likes
     }
-    //Set the sum of Likes of all blogs for each author 
+    //Set the sum of Likes of all blogs for each author
     authors.forEach(author => author.likes = getLikes(author.author))
     //return the author Object with most likes (first if more than one)
     return authors.find(author => author.likes === max)
