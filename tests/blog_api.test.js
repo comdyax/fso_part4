@@ -47,6 +47,53 @@ test('succesfull post request to db', async () => {
     expect(blogs.map(blog => blog.url)).toContain(newBlog.url)
 })
 
+test('default likes value', async () => {
+    const newBlog = {
+        title: '2525253 test',
+        author: 'some dude',
+        url: 'some url',
+    }
+    const response = await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+    const blogs = await helper.blogsInDb()
+    const blog = blogs.find(blog => blog.id === response.body.id)
+    expect(blog.likes).toBe(0)
+    expect(response.body.likes).toBe(0)
+})
+
+test('error message when title field is missing', async () => {
+    const newBlog = {
+        author: 'some dude',
+        url: 'some url',
+    }
+    const response = await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(400)
+
+    expect(response.body.error).toEqual('Blog validation failed: title: Path `title` is required.')
+})
+
+test('error message when url field is missing', async () => {
+    const newBlog = {
+        title: '2525253 test',
+        author: 'some dude',
+    }
+    const response = await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(400)
+
+    expect(response.body.error).toEqual('Blog validation failed: url: Path `url` is required.')
+})
+
+
+
+
 afterAll(async () => {
     await mongoose.connection.close()
 })
