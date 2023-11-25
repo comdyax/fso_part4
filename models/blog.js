@@ -19,6 +19,11 @@ const blogSchema = new mongoose.Schema({
     }
 })
 
-//TODO: blogSchema format
+blogSchema.set('toJSON', {
+    transform: (document, returnedObject) => {
+        returnedObject.id = returnedObject._id.toString()
+        delete returnedObject._id
+    }
+})
 
 module.exports = mongoose.model('Blog', blogSchema)
