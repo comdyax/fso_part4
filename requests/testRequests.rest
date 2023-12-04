@@ -25,3 +25,27 @@ Content-Type: application/json
 {
     "title": "blog my 123"
 }
+
+###
+POST  http://localhost:3003/api/users
+Content-Type: application/json
+
+{
+    "username": "blog main 2",
+    "name": "logblog ",
+    "password": "aspasdasd123aspwasf"
+}
+
+###
+POST  http://localhost:3003/api/users
+Content-Type: application/json
+
+{ 
+    "username": "blog main 2",
+    "name": "blog main 2",
+    "password": "1234"
+}
+
+###
+
+GET http://localhost:3003/api/users
