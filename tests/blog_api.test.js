@@ -6,11 +6,24 @@ const app = require('../app')
 const api = supertest(app)
 const Blog = require('../models/blog')
 
+let token = null
+
 beforeEach(async () => {
     await Blog.deleteMany({})
     const blogList = helper.initialBlogs.map(blog => new Blog(blog))
-    const promiseArray = blogList.map(blog => blog.save())
-    await Promise.all(promiseArray)
+    const promiseArray1 = blogList.map(blog => blog.save())
+    await Promise.all(promiseArray1)
+
+    const user = {
+        username: 'maxblog',
+        name: 'max',
+        password: '242424'
+    }
+
+    await api.post('/api/users').send(user)
+
+    const res = await api.post('/api/login').send(user)
+    token = res.body.token
 })
 
 describe('database format', () => {
@@ -19,7 +32,6 @@ describe('database format', () => {
             .get('/api/blogs')
             .expect(200)
             .expect('Content-Type', /application\/json/)
-        console.log(response.body)
         expect(response.body).toHaveLength(helper.initialBlogs.length)
     })
 
@@ -36,6 +48,7 @@ describe('database format', () => {
         }
         const response = await api
             .post('/api/blogs')
+            .set({ Authorization: `Bearer ${token}` })
             .send(newBlog)
             .expect(201)
             .expect('Content-Type', /application\/json/)
@@ -55,6 +68,7 @@ describe('error testing', () => {
         }
         const response = await api
             .post('/api/blogs')
+            .set({ Authorization: `Bearer ${token}` })
             .send(newBlog)
             .expect(400)
 
@@ -68,10 +82,24 @@ describe('error testing', () => {
         }
         const response = await api
             .post('/api/blogs')
+            .set({ Authorization: `Bearer ${token}` })
             .send(newBlog)
             .expect(400)
 
         expect(response.body.error).toEqual('Blog validation failed: url: Path `url` is required.')
+    })
+
+    test('correct error if no token is provided while adding a blog', async () => {
+        const newBlog = {
+            author: 'some dude',
+            url: 'some url',
+        }
+        const response = await api
+            .post('/api/blogs')
+            .send(newBlog)
+            .expect(401)
+
+        expect(response.body.error).toEqual('jwt must be provided')
     })
 })
 
@@ -85,6 +113,7 @@ describe('change database', () => {
         }
         await api
             .post('/api/blogs')
+            .set({ Authorization: `Bearer ${token}` })
             .send(newBlog)
             .expect(201)
             .expect('Content-Type', /application\/json/)
@@ -97,13 +126,27 @@ describe('change database', () => {
     })
 
     test('deleting a single blog post', async () => {
+        const newBlog = {
+            title: 'blogtitle',
+            author: 'memyself',
+            url: 'urlurlrul',
+            likes: 1
+        }
+        await api
+            .post('/api/blogs')
+            .set({ Authorization: `Bearer ${token}` })
+            .send(newBlog)
+            .expect(201)
+            .expect('Content-Type', /application\/json/)
+
         const blogsAtStart = await helper.blogsInDb()
-        const id = blogsAtStart[0].id
+        const id = blogsAtStart[blogsAtStart.length - 1].id
         await api
             .delete(`/api/blogs/${id}`)
+            .set({ Authorization: `Bearer ${token}` })
             .expect(204)
         const blogsAtEnd = await helper.blogsInDb()
-        expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1)
+        expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
         expect(blogsAtEnd.map(blogs => blogs.id)).not.toContain(id)
     })
 
