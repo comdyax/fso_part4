@@ -42,9 +42,9 @@ POST  http://localhost:3003/api/users
 Content-Type: application/json
 
 { 
-    "username": "testBlog",
-    "name": "blog main 2",
-    "password": "1234"
+    "username": "max",
+    "name": "max",
+    "password": "maxmax"
 }
 
 ###
